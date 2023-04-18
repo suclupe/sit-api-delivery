@@ -1,37 +1,40 @@
 package com.delivery.apidelivery.services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.delivery.apidelivery.entities.Food;
+import org.springframework.stereotype.Service;
+
 import com.delivery.apidelivery.entities.Order;
 
+@Service
 public class OrderService {
-    private List<Order> orders = new ArrayList<>();
+
+    private Map<Integer, Order> orders = new HashMap<>();
+    private int nextId = 1;
 
     public List<Order> getAllOrders() {
-        return orders;
+        return new ArrayList<>(orders.values());
     }
 
-    public Order getOrderById(int orderId) {
-        for (Order order : orders) {
-            if (order.getId() == orderId) {
-                return order;
-            }
-        }
-        return null;
+    public Order getOrderById(int id) {
+        return orders.get(id);
     }
 
-    public void updateOrderStatus(int orderId, String newStatus) {
-        Order order = getOrderById(orderId);
-        if (order != null) {
-            order.setStatus(newStatus);
-        }
+    public Order createOrder(Order order) {
+        order.setId(nextId++);
+        orders.put(order.getId(), order);
+        return order;
     }
 
-    private int generateOrderId() {
-        // implement your own logic to generate unique order ids
-        return orders.size() + 1;
+    public Order updateOrder(Order order) {
+        orders.put(order.getId(), order);
+        return order;
+    }
+
+    public void deleteOrder(int id) {
+        orders.remove(id);
     }
 }
